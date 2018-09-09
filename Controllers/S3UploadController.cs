@@ -38,7 +38,7 @@ namespace BlogApi.Controllers
     }
       
     [HttpPost]
-    public PutObjectResponse MyFileUpload()
+    public string MyFileUpload()
     {
       var request = HttpContext.Request;
       var fileStream = request.Body;
