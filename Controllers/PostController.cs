@@ -1,7 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BlogApi.Models;
+using BlogApi.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace BlogApi.Controllers
 {
@@ -9,11 +14,19 @@ namespace BlogApi.Controllers
   [ApiController]
   public class PostController : ControllerBase
   {
+    public static IConfiguration Configuration { get; set; }
+    public string AWS_KEY { get; private set; }
+    public string AWS_SECRET { get; private set; }
     private readonly PostContext _context;
+    private AmazonUploader uploader { get; set; }
 
-    public PostController(PostContext context)
+    public PostController(PostContext context, IConfiguration config)
     {
       _context = context;
+      Configuration = config;
+      AWS_KEY = Configuration["AWS_KEY"];
+      AWS_SECRET = Configuration["AWS_SECRET"];
+      uploader = new AmazonUploader(AWS_KEY, AWS_SECRET);
     }
 
     [HttpGet]
@@ -58,6 +71,37 @@ namespace BlogApi.Controllers
       _context.Posts.Update(updatedPost);
       _context.SaveChanges();
       return NoContent();
+    }
+    
+    // TODO refactor and rename
+    [HttpPost("image/{id:long}")]
+    public async Task<IActionResult> Image(long id)
+    {
+      var updatedPost = _context.Posts.Find(id);
+      if (updatedPost == null)
+      {
+        return NotFound();
+      }
+      var request = HttpContext.Request;
+      var fileStream = request.Body;
+      var contentType = request.ContentType;
+      var contentLength = request.ContentLength;
+      var key = Guid.NewGuid().ToString();
+
+      var length = contentLength.HasValue ? (long)contentLength : 0;
+      var result = await uploader.sendMyFileToS3(fileStream, contentType, length, key);
+
+      if (result == "error")
+        return InternalServerError();
+      updatedPost.ImageId = result;
+      _context.Posts.Update(updatedPost);
+      _context.SaveChanges();
+      return Ok(result);
+    }
+
+    private IActionResult InternalServerError()
+    {
+      throw new NotImplementedException();
     }
 
     [HttpDelete("{id}")]
