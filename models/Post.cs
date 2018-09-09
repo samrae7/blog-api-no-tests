@@ -9,5 +9,6 @@ namespace BlogApi.Models
         public string Intro {get; set; }
         public string Body { get; set; }
         public DateTime DateCreated { get; set; }
+        public string ImageId { get; set; }
     }
 }
