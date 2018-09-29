@@ -7,6 +7,7 @@ using BlogApi.Models;
 using BlogApi.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace BlogApi.Controllers
 {
@@ -18,7 +19,7 @@ namespace BlogApi.Controllers
     public string AWS_KEY { get; private set; }
     public string AWS_SECRET { get; private set; }
     private readonly PostContext _context;
-    private AmazonUploader uploader { get; set; }
+    public AmazonUploader uploader { get; set; }
 
     public PostController(PostContext context, IConfiguration config)
     {
@@ -56,7 +57,7 @@ namespace BlogApi.Controllers
       return CreatedAtRoute("GetPost", new { id = post.Id }, post);
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public IActionResult Update(long id, Post post)
     {
       var updatedPost = _context.Posts.Find(id);
@@ -72,12 +73,13 @@ namespace BlogApi.Controllers
       _context.SaveChanges();
       return NoContent();
     }
-    
+
     // TODO refactor and rename
     [HttpPost("image/{id:long}")]
     public async Task<IActionResult> Image(long id)
     {
-      var updatedPost = _context.Posts.Find(id);
+      var posts = _context.Posts;
+      var updatedPost = posts.Find(id);
       if (updatedPost == null)
       {
         return NotFound();
