@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace BlogApi
 {
@@ -30,6 +31,11 @@ namespace BlogApi
           opt.UseSqlite(Configuration.GetConnectionString("PostContext")));
       services.AddMvc()
               .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+      services.AddSwaggerGen(c =>
+      {
+          c.SwaggerDoc("v1", new Info { Title = "Sams Blog API", Version = "v1" });
+      });
     }
     public void Configure(IApplicationBuilder app)
     {
@@ -38,6 +44,16 @@ namespace BlogApi
            .AllowAnyHeader()
            .AllowAnyMethod()
         );
+
+      // Enable middleware to serve generated Swagger as a JSON endpoint.
+      app.UseSwagger();
+
+      // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+      // specifying the Swagger JSON endpoint.
+      app.UseSwaggerUI(c =>
+      {
+          c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sams Blog API V1");
+      });
       app.UseMvc();
     }
   }
