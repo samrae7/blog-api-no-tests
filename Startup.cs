@@ -1,4 +1,5 @@
-﻿using BlogApi.Models;
+﻿using System;
+using BlogApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,10 +28,19 @@ namespace BlogApi
     
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddDbContext<PostContext>(opt =>
-          opt.UseSqlite(Configuration.GetConnectionString("PostContext")));
       services.AddMvc()
               .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+      // Use SQL Database if in Azure, otherwise, use SQLite
+      if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+        services.AddDbContext<PostContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+      else
+        services.AddDbContext<PostContext>(options =>
+            options.UseSqlite(Configuration.GetConnectionString("PostContext")));
+
+      // Automatically perform database migration
+      services.BuildServiceProvider().GetService<PostContext>().Database.Migrate();
 
       services.AddSwaggerGen(c =>
       {
