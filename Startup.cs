@@ -34,7 +34,7 @@ namespace BlogApi
       // Use SQL Database if in Azure, otherwise, use SQLite
       if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
         services.AddDbContext<PostContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
       else
         services.AddDbContext<PostContext>(options =>
             options.UseSqlite(Configuration.GetConnectionString("PostContext")));
@@ -49,11 +49,11 @@ namespace BlogApi
     }
     public void Configure(IApplicationBuilder app)
     {
-      app.UseCors(builder =>
-        builder.WithOrigins("http://localhost:8000")
-           .AllowAnyHeader()
-           .AllowAnyMethod()
-        );
+      // app.UseCors(builder =>
+      //   builder.WithOrigins("http://localhost:8000")
+      //      .AllowAnyHeader()
+      //      .AllowAnyMethod()
+      //   );
 
       // Enable middleware to serve generated Swagger as a JSON endpoint.
       app.UseSwagger();
