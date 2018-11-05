@@ -49,11 +49,11 @@ namespace BlogApi
     }
     public void Configure(IApplicationBuilder app)
     {
-      // app.UseCors(builder =>
-      //   builder.WithOrigins("http://localhost:8000")
-      //      .AllowAnyHeader()
-      //      .AllowAnyMethod()
-      //   );
+      app.UseCors(builder =>
+        builder.WithOrigins("http://localhost:8000")
+           .AllowAnyHeader()
+           .AllowAnyMethod()
+        );
 
       // Enable middleware to serve generated Swagger as a JSON endpoint.
       app.UseSwagger();
