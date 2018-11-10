@@ -22,20 +22,20 @@ namespace BlogApi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                // .ConfigureAppConfiguration((ctx, builder) =>
-                //     {
-                //         var keyVaultEndpoint = GetKeyVaultEndpoint();
-                //         if (!string.IsNullOrEmpty(keyVaultEndpoint))
-                //         {
-                //             var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                //             var keyVaultClient = new KeyVaultClient(
-                //                 new KeyVaultClient.AuthenticationCallback(
-                //                     azureServiceTokenProvider.KeyVaultTokenCallback));
-                //             builder.AddAzureKeyVault(
-                //                 keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
-                //         }
-                //     }
-                // )
+                .ConfigureAppConfiguration((ctx, builder) =>
+                    {
+                        var keyVaultEndpoint = GetKeyVaultEndpoint();
+                        if (!string.IsNullOrEmpty(keyVaultEndpoint))
+                        {
+                            var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                            var keyVaultClient = new KeyVaultClient(
+                                new KeyVaultClient.AuthenticationCallback(
+                                    azureServiceTokenProvider.KeyVaultTokenCallback));
+                            builder.AddAzureKeyVault(
+                                keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
+                        }
+                    }
+                )
                 .UseStartup<Startup>();
 
         private static string GetKeyVaultEndpoint() => "https://blogApiVault.vault.azure.net";
