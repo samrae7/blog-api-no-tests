@@ -26,8 +26,8 @@ namespace BlogApi.Controllers
     public S3UploadController(IConfiguration config)
     {
       Configuration = config;
-      AWS_KEY = Configuration["AWS_KEY"];
-      AWS_SECRET = Configuration["AWS_SECRET"];
+      AWS_KEY = Configuration["AwsKey"];
+      AWS_SECRET = Configuration["AwsSecret"];
       uploader = new AmazonUploader(AWS_KEY, AWS_SECRET);
     }
 
