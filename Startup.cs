@@ -21,7 +21,7 @@ namespace BlogApi
         .AddJsonFile("appsettings.json", 
                      optional: false, 
                      reloadOnChange: true)
-        .AddEnvironmentVariables();
+        // .AddEnvironmentVariables();
 
       Configuration = builder.Build();
     }
