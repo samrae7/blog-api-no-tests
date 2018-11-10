@@ -37,7 +37,7 @@ namespace BlogApi.Controllers
       return this.AWS_KEY;
     }
 
-        [HttpGet("/secret", Name = "GetSecret")]
+    [HttpGet("/secret", Name = "GetSecret")]
     public string GetSecret()
     {
       return this.AWS_SECRET;
