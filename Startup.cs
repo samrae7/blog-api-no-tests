@@ -20,8 +20,8 @@ namespace BlogApi
         .SetBasePath(env.ContentRootPath)
         .AddJsonFile("appsettings.json", 
                      optional: false, 
-                     reloadOnChange: true);
-        // .AddEnvironmentVariables();
+                     reloadOnChange: true)
+        .AddEnvironmentVariables();
 
       Configuration = builder.Build();
     }
