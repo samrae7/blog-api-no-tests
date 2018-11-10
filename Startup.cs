@@ -20,7 +20,7 @@ namespace BlogApi
         .SetBasePath(env.ContentRootPath)
         .AddJsonFile("appsettings.json", 
                      optional: false, 
-                     reloadOnChange: true)
+                     reloadOnChange: true);
         // .AddEnvironmentVariables();
 
       Configuration = builder.Build();
@@ -53,7 +53,7 @@ namespace BlogApi
     public void Configure(IApplicationBuilder app)
     {
       app.UseCors(builder =>
-        builder.WithOrigins("http://localhost:8000")
+        builder.WithOrigins("http://localhost:8000", "https://blogapi.azurewebsites.net")
            .AllowAnyHeader()
            .AllowAnyMethod()
         );
