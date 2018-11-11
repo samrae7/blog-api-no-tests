@@ -68,10 +68,11 @@ namespace BlogApi.Controllers
 
       updatedPost.Title = post.Title;
       updatedPost.Body = post.Body;
+      updatedPost.ImageId = post.ImageId;
 
       _context.Posts.Update(updatedPost);
       _context.SaveChanges();
-      return NoContent();
+      return Ok(_context.Posts);
     }
 
     // TODO refactor and rename
