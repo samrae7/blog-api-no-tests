@@ -53,7 +53,8 @@ namespace BlogApi
     public void Configure(IApplicationBuilder app)
     {
       app.UseCors(builder =>
-        builder.WithOrigins("http://localhost:8000", "https://blogapi.azurewebsites.net")
+        // builder.WithOrigins("http://localhost:8000", "https://blogapi.azurewebsites.net")
+        builder.AllowAnyOrigin()
            .AllowAnyHeader()
            .AllowAnyMethod()
         );
