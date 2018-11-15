@@ -43,8 +43,10 @@ namespace BlogApi.Controllers
       var request = HttpContext.Request;
       var fileStream = request.Body;
       var contentLength = request.ContentLength;
+      var filename = request.Headers["filename"];
       var contentType = request.ContentType;
-      string key = Guid.NewGuid().ToString();
+      // TODO ensure key is unique
+      string key = filename;
 
       var length = contentLength.HasValue ? (long)contentLength : 0;
       return uploader.sendMyFileToS3(fileStream, contentType, length, key).Result;
