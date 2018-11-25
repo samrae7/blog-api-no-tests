@@ -1,0 +1,15 @@
+# IDE #
+.vscode
+
+# Directories #
+bin/
+obj/
+
+# DB
+*.db
+.DS_Store
+
+# Azure Logs
+LogFiles/
+deployments/
+webapp_logs.zip
