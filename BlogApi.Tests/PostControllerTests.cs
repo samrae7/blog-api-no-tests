@@ -49,7 +49,7 @@ namespace BlogApi.tests
       var createdResult = controller.Create(newPost);
       // add tests for DB update.
       Assert.NotNull(createdResult);
-      Assert.Equal("CreatePost", createdResult.RouteName);
+      Assert.Equal("GetPost", createdResult.RouteName);
       Assert.Equal(newPost.Id, createdResult.RouteValues["Id"]);
     }
 
