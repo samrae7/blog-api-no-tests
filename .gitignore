@@ -4,6 +4,7 @@
 # Directories #
 bin/
 obj/
+BlogApi.Tests/obj/
 
 # DB
 *.db
