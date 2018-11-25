@@ -55,7 +55,7 @@ namespace BlogApi.Controllers
       _context.Posts.Add(post);
       _context.SaveChanges();
 
-      return CreatedAtRoute("CreatePost", new { id = post.Id }, post);
+      return CreatedAtRoute("GetPost", new { id = post.Id }, post);
     }
 
     [HttpPost("{id}")]
