@@ -15,4 +15,10 @@ steps:
     dotnet publish --output $(Build.ArtifactStagingDirectory)
   displayName: 'dotnet build $(buildConfiguration) + publish'
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
 - task: PublishBuildArtifacts@1
