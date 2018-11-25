@@ -40,7 +40,18 @@ namespace BlogApi.tests
     {
       var result = controller.GetAll();
       Assert.Equal(posts, result.Value);
-    } 
+    }
+
+    [Fact]
+    public void createPost()
+    {
+      Post newPost = new Post {Title = "fooTitle"};
+      var createdResult = controller.Create(newPost);
+      // add tests for DB update.
+      Assert.NotNull(createdResult);
+      Assert.Equal("CreatePost", createdResult.RouteName);
+      Assert.Equal(newPost.Id, createdResult.RouteValues["Id"]);
+    }
 
     [Fact]
     public async void UploadPostImage()
