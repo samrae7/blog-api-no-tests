@@ -15,6 +15,7 @@ namespace BlogApi.Controllers
   [ApiController]
   public class PostController : ControllerBase
   {
+    // TODO - factor out DB logic as per: https://stackoverflow.com/questions/35743811/how-can-i-test-asp-net-mvc-post-controller-with-moq-and-nunit
     public static IConfiguration Configuration { get; set; }
     public string AWS_KEY { get; private set; }
     public string AWS_SECRET { get; private set; }
@@ -48,13 +49,13 @@ namespace BlogApi.Controllers
     }
 
     [HttpPost]
-    public IActionResult Create(Post post)
+    public CreatedAtRouteResult Create(Post post)
     {
       post.DateCreated = new System.DateTime();
       _context.Posts.Add(post);
       _context.SaveChanges();
 
-      return CreatedAtRoute("GetPost", new { id = post.Id }, post);
+      return CreatedAtRoute("CreatePost", new { id = post.Id }, post);
     }
 
     [HttpPost("{id}")]
