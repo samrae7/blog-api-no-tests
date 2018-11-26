@@ -57,6 +57,7 @@ namespace BlogApi
         builder.AllowAnyOrigin()
            .AllowAnyHeader()
            .AllowAnyMethod()
+           .WithExposedHeaders("Location")
         );
 
       // Enable middleware to serve generated Swagger as a JSON endpoint.
