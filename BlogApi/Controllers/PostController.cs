@@ -111,13 +111,13 @@ namespace BlogApi.Controllers
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {
-      var todo = _context.Posts.Find(id);
-      if (todo == null)
+      var post = _context.Posts.Find(id);
+      if (post == null)
       {
         return NotFound();
       }
 
-      _context.Posts.Remove(todo);
+      _context.Posts.Remove(post);
       _context.SaveChanges();
       return NoContent();
     }
