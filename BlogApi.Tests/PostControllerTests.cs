@@ -20,13 +20,14 @@ namespace BlogApi.tests
   {
     PostController controller;
     List<Post> posts;
+    Mock<DbSet<Post>> mockSet;
     public PostControllerTests()
     {
       posts = GetTestPosts();
-      var mockSet = GetQueryableMockDbSet<Post>(posts);
+      mockSet = GetQueryableMockDbSet<Post>(posts);
       var mockContextOptions = new DbContextOptions<PostContext>();
       var mockContext = new Mock<PostContext>(mockContextOptions);
-      mockContext.Setup(m => m.Posts).Returns(mockSet);
+      mockContext.Setup(m => m.Posts).Returns(mockSet.Object);
 
       var mockConfig = new Mock<IConfiguration>();
       mockConfig.Setup(m => m["AWS_KEY"]).Returns("my-aws-key");
@@ -79,7 +80,15 @@ namespace BlogApi.tests
       // TODO separate tests out and rename test methods
     }
 
-    private static DbSet<T> GetQueryableMockDbSet<T>(List<T> sourceList) where T : class
+    [Fact]
+    public void deletePost()
+    {
+      controller.Delete(2);
+      // rather than test this way wrap the db stuff in a class and test that the class method is called
+      mockSet.Verify(m => m.Find(It.IsAny<long>()), Times.Once);
+    }
+
+    private static Mock<DbSet<T>> GetQueryableMockDbSet<T>(List<T> sourceList) where T : class
     {
       var queryable = sourceList.AsQueryable();
 
@@ -90,7 +99,7 @@ namespace BlogApi.tests
       dbSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
       dbSet.Setup(d => d.Add(It.IsAny<T>())).Callback<T>((s) => sourceList.Add(s));
       dbSet.Setup(d => d.Find(It.IsAny<long>())).Returns(sourceList[0]);
-      return dbSet.Object;
+      return dbSet;
     }
 
     private List<Post> GetTestPosts()
