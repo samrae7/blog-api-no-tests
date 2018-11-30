@@ -21,13 +21,16 @@ namespace BlogApi.tests
     PostController controller;
     List<Post> posts;
     Mock<DbSet<Post>> mockSet;
+    Mock<PostContext> mockContext;
+
     public PostControllerTests()
     {
       posts = GetTestPosts();
       mockSet = GetQueryableMockDbSet<Post>(posts);
       var mockContextOptions = new DbContextOptions<PostContext>();
-      var mockContext = new Mock<PostContext>(mockContextOptions);
+      mockContext = new Mock<PostContext>(mockContextOptions);
       mockContext.Setup(m => m.Posts).Returns(mockSet.Object);
+      mockContext.Setup(m => m.SaveChanges());
 
       var mockConfig = new Mock<IConfiguration>();
       mockConfig.Setup(m => m["AWS_KEY"]).Returns("my-aws-key");
@@ -56,7 +59,7 @@ namespace BlogApi.tests
 
     [Fact]
     public async void UploadPostImage()
-    // TODO1 refactor so that we are not reliant on sealed class (?) HttpContext
+    // TODO refactor so that we are not reliant on sealed class (?) HttpContext
     {
       var controllerCtx = new ControllerContext();
       controllerCtx.HttpContext = new DefaultHttpContext();
@@ -83,22 +86,26 @@ namespace BlogApi.tests
     [Fact]
     public void deletePost()
     {
-      controller.Delete(2);
+      var result = (NoContentResult) controller.Delete(2);
+      Assert.Equal(result.StatusCode, controller.NoContent().StatusCode);
       // rather than test this way wrap the db stuff in a class and test that the class method is called
       mockSet.Verify(m => m.Find(It.IsAny<long>()), Times.Once);
+      mockSet.Verify(m => m.Remove(It.IsAny<Post>()), Times.Once);
+      mockContext.Verify(m => m.SaveChanges(), Times.Once);
     }
 
-    private static Mock<DbSet<T>> GetQueryableMockDbSet<T>(List<T> sourceList) where T : class
+    private static Mock<DbSet<Post>> GetQueryableMockDbSet<T>(List<Post> sourceList) where T : class
     {
       var queryable = sourceList.AsQueryable();
 
-      var dbSet = new Mock<DbSet<T>>();
-      dbSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
-      dbSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
-      dbSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
-      dbSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
-      dbSet.Setup(d => d.Add(It.IsAny<T>())).Callback<T>((s) => sourceList.Add(s));
+      var dbSet = new Mock<DbSet<Post>>();
+      dbSet.As<IQueryable<Post>>().Setup(m => m.Provider).Returns(queryable.Provider);
+      dbSet.As<IQueryable<Post>>().Setup(m => m.Expression).Returns(queryable.Expression);
+      dbSet.As<IQueryable<Post>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
+      dbSet.As<IQueryable<Post>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
+      dbSet.Setup(d => d.Add(It.IsAny<Post>())).Callback<Post>((s) => sourceList.Add(s));
       dbSet.Setup(d => d.Find(It.IsAny<long>())).Returns(sourceList[0]);
+      dbSet.Setup(d => d.Remove(It.IsAny<Post>()));
       return dbSet;
     }
 
