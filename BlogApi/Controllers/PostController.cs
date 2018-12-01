@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogApi.Models;
 using BlogApi.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 
@@ -49,6 +49,7 @@ namespace BlogApi.Controllers
     }
 
     [HttpPost]
+    [Authorize("create:posts")]
     public CreatedAtRouteResult Create(Post post)
     {
       post.DateCreated = new System.DateTime();
