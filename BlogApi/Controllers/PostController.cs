@@ -48,8 +48,8 @@ namespace BlogApi.Controllers
       return post;
     }
 
-    [HttpPost]
     [Authorize("create:posts")]
+    [HttpPost]
     public CreatedAtRouteResult Create(Post post)
     {
       post.DateCreated = new System.DateTime();
@@ -59,6 +59,7 @@ namespace BlogApi.Controllers
       return CreatedAtRoute("GetPost", new { id = post.Id }, post);
     }
 
+    [Authorize("create:posts")]
     [HttpPost("{id}")]
     public IActionResult Update(long id, Post post)
     {
@@ -77,6 +78,7 @@ namespace BlogApi.Controllers
       return Ok(_context.Posts);
     }
 
+    [Authorize("create:posts")]
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {
@@ -92,6 +94,7 @@ namespace BlogApi.Controllers
     }
 
     // TODO refactor and rename
+    [Authorize("create:posts")]
     [HttpPost("image/{id:long}")]
     public async Task<IActionResult> Image(long id)
     {
