@@ -77,6 +77,20 @@ namespace BlogApi.Controllers
       return Ok(_context.Posts);
     }
 
+    [HttpDelete("{id}")]
+    public IActionResult Delete(long id)
+    {
+      var post = _context.Posts.Find(id);
+      if (post == null)
+      {
+        return NotFound();
+      }
+
+      _context.Posts.Remove(post);
+      _context.SaveChanges();
+      return NoContent();
+    }
+
     // TODO refactor and rename
     [HttpPost("image/{id:long}")]
     public async Task<IActionResult> Image(long id)
@@ -107,21 +121,6 @@ namespace BlogApi.Controllers
     private IActionResult InternalServerError()
     {
       throw new NotImplementedException();
-    }
-
-    [HttpDelete("{id}")]
-    [Authorize("create:posts")]
-    public IActionResult Delete(long id)
-    {
-      var post = _context.Posts.Find(id);
-      if (post == null)
-      {
-        return NotFound();
-      }
-
-      _context.Posts.Remove(post);
-      _context.SaveChanges();
-      return NoContent();
     }
   }
 }
