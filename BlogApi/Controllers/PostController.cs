@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogApi.Models;
 using BlogApi.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 
@@ -48,6 +48,7 @@ namespace BlogApi.Controllers
       return post;
     }
 
+    [Authorize("create:posts")]
     [HttpPost]
     public CreatedAtRouteResult Create(Post post)
     {
@@ -58,6 +59,7 @@ namespace BlogApi.Controllers
       return CreatedAtRoute("GetPost", new { id = post.Id }, post);
     }
 
+    [Authorize("create:posts")]
     [HttpPost("{id}")]
     public IActionResult Update(long id, Post post)
     {
@@ -76,7 +78,23 @@ namespace BlogApi.Controllers
       return Ok(_context.Posts);
     }
 
+    [Authorize("create:posts")]
+    [HttpDelete("{id}")]
+    public IActionResult Delete(long id)
+    {
+      var post = _context.Posts.Find(id);
+      if (post == null)
+      {
+        return NotFound();
+      }
+
+      _context.Posts.Remove(post);
+      _context.SaveChanges();
+      return NoContent();
+    }
+
     // TODO refactor and rename
+    [Authorize("create:posts")]
     [HttpPost("image/{id:long}")]
     public async Task<IActionResult> Image(long id)
     {
@@ -106,20 +124,6 @@ namespace BlogApi.Controllers
     private IActionResult InternalServerError()
     {
       throw new NotImplementedException();
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult Delete(long id)
-    {
-      var post = _context.Posts.Find(id);
-      if (post == null)
-      {
-        return NotFound();
-      }
-
-      _context.Posts.Remove(post);
-      _context.SaveChanges();
-      return NoContent();
     }
   }
 }
