@@ -46,7 +46,8 @@ namespace BlogApi
 
       services.AddAuthorization(options =>
       {
-          options.AddPolicy("create:posts", policy => policy.Requirements.Add(new HasScopeRequirement("read:messages", domain)));
+          options.AddPolicy("create:posts", policy => policy.Requirements
+            .Add(new HasScopeRequirement("create:posts", domain)));
       });
 
       // register the scope authorization handler
