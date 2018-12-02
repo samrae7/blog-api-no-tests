@@ -110,6 +110,7 @@ namespace BlogApi.Controllers
     }
 
     [HttpDelete("{id}")]
+    [Authorize("create:posts")]
     public IActionResult Delete(long id)
     {
       var post = _context.Posts.Find(id);
