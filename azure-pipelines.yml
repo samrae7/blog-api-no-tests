@@ -32,7 +32,7 @@ steps:
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
-    testRunner: XUnit
-    testResultsFiles: '**/*.trx'
+    testRunner: xUnit
+    testResultsFiles: '**/*.xml'
 
 - task: PublishBuildArtifacts@1
