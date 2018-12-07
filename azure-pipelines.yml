@@ -12,7 +12,7 @@ variables:
 # steps:
 - script: |
     dotnet build --configuration $(buildConfiguration)
-    dotnet publish BlogApi --output $(Build.ArtifactStagingDirectory)
+    dotnet publish --output $(Build.ArtifactStagingDirectory)
   displayName: 'dotnet build $(buildConfiguration) + publish'
 
 - task: DotNetCoreCLI@2
