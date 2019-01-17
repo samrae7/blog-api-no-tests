@@ -15,7 +15,7 @@ namespace BlogApi
 {
   public class Startup
   {
-    public IConfiguration Configuration { get; }
+    public IConfiguration   Configuration { get; }
     
     public Startup(IHostingEnvironment env)
     {
@@ -24,6 +24,7 @@ namespace BlogApi
         .AddJsonFile("appsettings.json", 
                      optional: false, 
                      reloadOnChange: true)
+        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
         .AddEnvironmentVariables();
 
       Configuration = builder.Build();
