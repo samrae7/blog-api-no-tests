@@ -52,7 +52,7 @@ namespace BlogApi.Controllers
     [HttpPost]
     public CreatedAtRouteResult Create(Post post)
     {
-      post.DateCreated = new System.DateTime();
+      post.DateCreated = DateTime.Now;
       _context.Posts.Add(post);
       _context.SaveChanges();
 
